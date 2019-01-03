@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration >
+    <!-- dataSource内部字面属性的优先级要你高于 外部properties文件内属性的优先级要高于peoperties的内部子节点的优先级 -->
+    <properties resource="jdbc.properties">
+
+    </properties>
+    <!-- 注册一个简写的类名，可以在其他的mapper文件中被引用（不推荐使用） -->
+    <!--
+    <typeAliases>
+        <typeAlias type="com.xuzhi.model.Girl" alias="girl"  />
+    </typeAliases>
+    -->
+    <environments default="dev">
+        <environment id="dev">
+            <transactionManager type="JDBC"></transactionManager>
+            <dataSource type="UNPOOLED">
+                <property name="url" value="${url}" />
+                <property name="driver" value="${driver}" />
+                <property name="username" value="${username}" />
+                <property name="password" value="${password}" />
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers >
+        <mapper resource="com.xuzhi.mapper/GirlMapper.xml" />
+    </mappers>
+</configuration>

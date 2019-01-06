@@ -39,4 +39,21 @@ public class Girl {
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
+    public Girl(String name, String flower){
+        this.name=name;
+        this.flower=flower;
+    }
+    public Girl(){
+
+    }
+
+    @Override
+    public String toString() {
+        return "Girl{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", flower='" + flower + '\'' +
+                ", birthday=" + birthday +
+                '}';
+    }
 }

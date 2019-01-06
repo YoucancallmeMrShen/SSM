@@ -8,5 +8,26 @@
     <select id="queryById" resultType="com.xuzhi.model.Girl">
         select * from girl where id=#{id}
     </select>
+    <select id="queryByNameFlower" resultType="com.xuzhi.model.Girl">
+        select * from girl where name=#{name} and flower=#{flower}
+    </select>
+    <select id="queryByNameFlower1" resultType="com.xuzhi.model.Girl">
+        select * from girl where name=#{name} and flower=#{flower}
+    </select>
+    <select id="queryByNameFlower2" resultType="com.xuzhi.model.Girl">
+        select * from girl where name=#{name} and flower=#{flower}
+    </select>
+    <select id="queryByNameFlower3" resultType="com.xuzhi.model.Girl">
+        select * from girl
+        <where>
+            <if test="name!=null and name!=''">
+                and name=#{name}
+            </if>
+            <if test="flower!=null and name!=''">
+                and flower=#{flower}
+            </if>
+        </where>
+    </select>
+
 
 </mapper>

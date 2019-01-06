@@ -7,6 +7,10 @@
     <properties resource="jdbc.properties">
 
     </properties>
+    <settings>
+        <!--设置日志配置-->
+        <setting name="logImpl" value="LOG4J"/>
+    </settings>
     <!-- 注册一个简写的类名，可以在其他的mapper文件中被引用（不推荐使用） -->
     <!--
     <typeAliases>
@@ -25,7 +29,17 @@
         </environment>
     </environments>
 
+
     <mappers >
+        <!--  四种引入方式，多用第一种-->
         <mapper resource="com.xuzhi.mapper/GirlMapper.xml" />
+        <mapper resource="com.xuzhi.mapper/GirlMapperSQL.xml" />
+        <!--
+        <mapper class="com.xuzhi.mapper.GirlMapper" />
+        -->
+        <!--引入一个包的方式，以后只要凡事在这个包下的新建的mapper，都不需要重新引入-->
+        <!--
+            <package name="com.xuzhi.mapper" />
+         -->
     </mappers>
 </configuration>

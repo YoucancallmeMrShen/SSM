@@ -34,6 +34,9 @@
         <!--  四种引入方式，多用第一种-->
         <mapper resource="com.xuzhi.mapper/GirlMapper.xml" />
         <mapper resource="com.xuzhi.mapper/GirlMapperSQL.xml" />
+        <mapper resource="com.xuzhi.mapper/GirlDetailMapper.xml"/>
+        <mapper resource="com.xuzhi.mapper/GirlWithDetailMapper.xml"/>
+        <mapper resource="com.xuzhi.mapper/GirlWithBlogMapper.xml" />
         <!--
         <mapper class="com.xuzhi.mapper.GirlMapper" />
         -->

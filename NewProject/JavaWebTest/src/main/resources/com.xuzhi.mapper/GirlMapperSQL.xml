@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuzhi.mapper.GirlMapperSQL">
+
+    <select id="queryByNameFlower" resultType="com.xuzhi.model.Girl">
+        select * from girl
+        <where>
+            <if test="name!=null">
+                and name=#{name}
+            </if>
+            <if test="flower!=null">
+                and flower=#{flower}
+            </if>
+        </where>
+    </select>
+</mapper>

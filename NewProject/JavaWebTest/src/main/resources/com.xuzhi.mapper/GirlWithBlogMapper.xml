@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuzhi.mapper.GirlWithBlogMapper">
+
+    <resultMap id="BaseGirlDetail" type="com.xuzhi.model.GirlDetail">
+        <id property="id" column="gid" />
+        <result property="name" column="name" />
+        <result property="flower" column="flower" />
+        <result property="birthday" column="birthday" />
+    </resultMap>
+    <resultMap id="girlWithBlogMap" extends="BaseGirlDetail" type="com.xuzhi.model.GirlBlog" >
+        <!--ofType是用来描述集合中元素的数据类型-->
+        <collection property="blog" ofType="com.xuzhi.model.Blog">
+            <id property="id" column="bid" />
+            <result property="title" column="title" />
+            <result property="summary" column="summary" />
+            <result property="content" column="blogContent" />
+            <collection property="comments" ofType="com.xuzhi.model.Comment">
+                <id  property="id" column="cid"/>
+                <result property="content" column="commentContent" />
+            </collection>
+    </collection>
+    </resultMap>
+    <select id="queryByIdWithBlog" resultMap="girlWithBlogMap">
+        SELECT t1.id as gid,t1.`name`,t1.flower,t1.birthday,
+        t2.id as bid,t2.title,t2.summary,t2.content as blogContent,
+        t3.id as cid,t3.content as commentContent
+        from girl t1,blog t2,`comment` t3
+        <where>
+            t1.id=t2.g_id
+            and t2.id=t3.b_id
+            and t1.id=#{id}
+        </where>
+    </select>
+</mapper>

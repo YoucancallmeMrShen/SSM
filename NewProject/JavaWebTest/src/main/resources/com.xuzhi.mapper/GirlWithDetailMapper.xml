@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuzhi.mapper.GirlWithDetailMapper">
+
+    <select id="queryById" resultType="com.xuzhi.model.GirlWithDetail">
+        select *
+        from girl_detail
+        where gid=#{id}
+    </select>
+</mapper>

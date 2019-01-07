@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuzhi.mapper.GirlDetailMapper">
+
+    <!--
+        对应一般的单表查询，我们用mybatis的resultType就可以解决
+        但是对于多表联合查询我们就需要使用resultMap来进行详细描述返回值处理
+    -->
+    <!--可以变编写一个父resultMap，子resultMap可以继承父resultMap，以减少重复代码量
+        在子resultMap中增加extends=“父id”就可以使用父resultMap
+    -->
+    <resultMap id="BaseGirlDetail" type="com.xuzhi.model.GirlDetail">
+        <id property="id" column="uid" />
+        <result property="name" column="name" />
+        <result property="flower" column="flower" />
+        <result property="birthday" column="birthday" />
+    </resultMap>
+
+    <!--封装方式一：使用assocation-->
+    <resultMap id="GirlWithDetailMap" type="com.xuzhi.model.GirlDetail">
+        <id property="id" column="uid" />
+        <result property="name" column="name" />
+        <result property="flower" column="flower" />
+        <result property="birthday" column="birthday" />
+        <association property="girlWithDetail" javaType="com.xuzhi.model.GirlWithDetail">
+            <id property="gid" column="gdid" />
+            <result property="address" column="address" />
+        </association>
+    </resultMap>
+    <!--封装方式二：使用；连缀方式-->
+    <resultMap id="GirlWithDetailMap2" type="com.xuzhi.model.GirlDetail">
+        <id property="id" column="uid" />
+        <result property="name" column="name" />
+        <result property="flower" column="flower" />
+        <result property="birthday" column="birthday" />
+        <!--连缀写法  "XXX.xx"-->
+        <result property="girlWithDetail.gid" column="gdid" />
+        <result property="girlWithDetail.address" column="address" />
+    </resultMap>
+
+    <!--封装方式三
+        支持分步查询，如果有的查询过于复杂，可以使用分步查询的方法进行查询
+
+    -->
+    <resultMap id="GirlWithDetailMap3" extends="BaseGirlDetail" type="com.xuzhi.model.GirlDetail">
+        <!--
+            该结果集中的一般属性有resultMap自行处理，对于复杂的javabean属性，则由我们自己处理
+            完场第一次查询后会调用assocation中select调用的查询，讲将结果封装到相应的javabean并赋值给property，完成查询
+            column属性表示一级查询到的某一列的值作为参数传给二级查询条件
+        -->
+        <association property="girlWithDetail" select="com.xuzhi.mapper.GirlWithDetailMapper.queryById" column="uid">
+        </association>
+    </resultMap>
+
+
+    <select id="queryById" resultMap="GirlWithDetailMap2">
+        select t1.id as uid,t1.`name`,t1.flower,t1.birthday,t2.id as gdid, t2.address
+        from girl t1,girl_detail t2
+        <where>
+            t1.id=t2.gid
+            and t1.id=#{id}
+        </where>
+    </select>
+    <!--多表联合查询-->
+    <select id="queryByIdByStep" resultMap="GirlWithDetailMap3">
+        select t1.id as uid,t1.`name`,t1.flower,t1.birthday
+        from girl t1
+        <where>
+            and t1.id=#{id}
+        </where>
+    </select>
+</mapper>

@@ -1,8 +1,9 @@
 package com.xuzhi.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Girl {
+public class Girl implements Serializable {
     private long id;
     private String name;
     private String flower;

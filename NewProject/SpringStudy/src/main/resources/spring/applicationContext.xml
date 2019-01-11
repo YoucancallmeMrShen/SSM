@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:lang="http://www.springframework.org/schema/lang"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.3.xsd
+    		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+    		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+    		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd
+    		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.3.xsd
+    		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+    		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    		http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-4.3.xsd">
+
+    <!--
+        该配置文件为spring的整体配置文件，所有的spring操作只需要引用这一个配置文件即可
+        因为在该配置文件中引用了其他的配置文件
+        其他的每一个配置文件都分别对应了各自的要求
+        例如：spring-mybatis.xml=>说明spring和mybatis整合是所需要的配置文件
+    -->
+    <!--这个标签可以将其他的配置文件引入，这样的话，我们将来整体读取这一个文件即可-->
+    <!--分别导入配置文件-->
+    <import resource="classpath:spring/spring-test.xml" />
+    <import resource="classpath:spring/spring-test2.xml" />
+
+    <!--可以导入spring文件夹下所有以spring-开头的配置文件-->
+    <import resource="classpath:spring/spring-*.xml" />
+
+    <!--
+        激活注解
+        扫描该包以及其子包
+    -->
+    <context:component-scan base-package="com.xuzhi.service" >
+        <!--这个包下面的Component注解不扫描-->
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Component" />
+    </context:component-scan>
+
+</beans>

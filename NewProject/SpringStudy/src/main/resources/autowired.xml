@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--byType注入-->
+    <!--<bean class="com.xuzhi.pojo.Girl" id="girl" autowire="byType">-->
+        <!--<property name="name" value="Girl1" />-->
+        <!--<property name="age" value="12" />-->
+    <!--</bean>-->
+    <!--
+        primary默认值为true
+        如果有多个bean，并且它会按类型注入给其他bean，那么只能有一个primary为true
+    -->
+    <!--<bean  class="com.xuzhi.spring.AliPay" primary="true" >-->
+    <!--</bean>-->
+    <!--<bean class="com.xuzhi.spring.WXPay" primary="false" >-->
+    <!--</bean>-->
+
+    <!--byName注入-->
+    <!--<bean class="com.xuzhi.pojo.Girl" id="girl" autowire="byName">-->
+    <!--</bean>-->
+    <!--<bean class="com.xuzhi.spring.AliPay" name="pay">-->
+    <!--</bean>-->
+
+    <!--constructor注入-->
+    <!--<bean class="com.xuzhi.pojo.Girl" id="girl" autowire="constructor">-->
+        <!--<constructor-arg name="name" value="nihao" />-->
+    <!--</bean>-->
+    <!--<bean class="com.xuzhi.spring.AliPay" name="pay">-->
+    <!--</bean>-->
+
+    <bean class="com.xuzhi.pojo.Girl" id="girl" autowire="constructor">
+        <constructor-arg name="name" value="nihao" />
+    </bean>
+    <bean class="com.xuzhi.spring.AliPay" name="pay">
+    </bean>
+
+
+</beans>

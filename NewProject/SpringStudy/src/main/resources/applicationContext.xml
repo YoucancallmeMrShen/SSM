@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd ">
+    <!--将对象的创建交给spring容器，在这个配置文件里面去声明我需要什么文件
+        class:写java类的全限定类名，他是通过全类名然后使用反射的技术进行创建的
+        id：ID就是给这个对象在整个应用程序上下文当中去个名以方便区分
+    -->
+    <!--
+        值的注入：
+
+    -->
+
+    <bean class="com.xuzhi.pojo.Girl" id="girl" abstract="true" destroy-method="clearDress" init-method="dress" name="g1,g2,g3">
+        <!--name指定要注入的属性名称，value给其赋值-->
+        <property name="name" value="myFirends" />
+    </bean>
+
+    <!--
+        默认情况下，所有的bean是容器初始化完毕，立马就注入
+        
+    -->
+    <bean class="com.xuzhi.pojo.Girl" parent="girl" id="peteryGirl">
+        <property name="age" value="12" />
+    </bean>
+
+
+    <bean class="com.xuzhi.spring.WXPay" id="pay">
+
+    </bean>
+
+</beans>

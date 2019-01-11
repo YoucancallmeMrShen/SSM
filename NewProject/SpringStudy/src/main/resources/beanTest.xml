@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean class="com.xuzhi.pojo.People" id="people" >
+        <property name="name" value="小明" />
+        <property name="age" value="12" />
+        <property name="friends">
+            <array>
+                <value>小红</value>
+                <value>小刚</value>
+                <value>你爸爸</value>
+            </array>
+        </property>
+        <property name="numbers">
+            <list>
+                <value>1</value>
+                <value>2</value>
+                <value>3</value>
+            </list>
+        </property>
+        <property name="girls">
+            <list>
+                <!--内部bean，不能被外部所引用-->
+                <bean class="com.xuzhi.pojo.Girl">
+                    <property name="name" value="nihao" />
+                </bean>
+                <bean class="com.xuzhi.pojo.Girl">
+                    <property name="name" value="测试" />
+                </bean>
+            </list>
+        </property>
+        <property name="pays">
+            <set>
+                <bean class="com.xuzhi.spring.AliPay">
+
+                </bean>
+                <bean class="com.xuzhi.spring.AliPay">
+
+                </bean>
+            </set>
+        </property>
+        <property name="girlMap">
+            <map>
+                <entry key="girl1">
+                <bean class="com.xuzhi.pojo.Girl">
+                    <property name="name" value="nihaoi" />
+                </bean>
+                </entry>
+                <entry key="girl2">
+                    <bean class="com.xuzhi.pojo.Girl">
+                        <property name="name" value="nihaoi" />
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+</beans>

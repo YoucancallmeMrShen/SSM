@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd ">
+    <alias name="girl" alias="girl2"/>
+    <bean id="pay" class="com.xuzhi.spring.AliPay">
+
+    </bean>
+    <bean id="girl" class="com.xuzhi.pojo.Girl" >
+        <!--非字面值可描述的属性注入，必须通过ref来描述-->
+        <property name="pay" ref="pay" />
+    </bean>
+
+    <bean id="girl1" class="com.xuzhi.pojo.Girl" >
+        <constructor-arg name="name" value="nihao" />
+    </bean>
+
+    <!--构造注入方式一：
+            通过名字来注入
+    -->
+    <bean id="car" class="com.xuzhi.pojo.Car">
+        <constructor-arg name="name" value="宝马" />
+        <constructor-arg name="price" value="12123123123" />
+        <constructor-arg name="speed" value="123123" />
+    </bean>
+
+    <!--构造注入方式二：-->
+    <bean id="car2" class="com.xuzhi.pojo.Car">
+        <constructor-arg index="0" value="宝马" />
+        <constructor-arg index="1" value="123123" />
+    </bean>
+
+    <!--构造方法注入三：-->
+    <bean id="car3" class="com.xuzhi.pojo.Car" >
+        <constructor-arg type="java.lang.String" value="宝马" />
+        <constructor-arg type="java.lang.Double" value="123" />
+    </bean>
+
+
+</beans>

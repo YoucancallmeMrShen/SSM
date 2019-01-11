@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:lang="http://www.springframework.org/schema/lang"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.3.xsd
+    		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+    		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+    		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd
+    		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.3.xsd
+    		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+    		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    		http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-4.3.xsd ">
+
+    <bean class="com.xuzhi.service.ProviderService" id="providerService">
+    </bean>
+    <bean class="com.xuzhi.service.AfterReturnningService" id="afterReturnningService" />
+
+    <!--1、AOP是基于代理完成的，所以要激活我们的自动代理-->
+    <aop:aspectj-autoproxy />
+    <!--2、注册一个切面要使用的类-->
+    <bean class="com.xuzhi.advice.BeforeAdvice" id="beforeAdvice" >
+    </bean>
+    <bean class="com.xuzhi.advice.AfterAdvice" id="afterAdvice" />
+    <bean class="com.xuzhi.advice.AfterReturningAdvice" id="afterReturningAdvice" />
+    <!--3、配置切入点等信息-->
+    <aop:config>
+        <aop:aspect id="beforeAspect" ref="beforeAdvice">
+            <!--aop:before 表明他确实是前置通知
+                method：指明他是使用哪个具体的方法来切
+                pointcut:切入点
+                        要切什么包下面的什么类下面的什么方法
+            -->
+            <!--如果有多个相同类型的建议，谁再前谁先执行-->
+            <aop:before method="methodBefore" pointcut="execution(* com.xuzhi.service.ProviderService.add(..))" />
+            <aop:before method="before" pointcut="execution(* com.xuzhi.service.ProviderService.add(..))" />
+        </aop:aspect>
+        <aop:aspect id="afterAspect" ref="afterAdvice">
+            <!--
+                execution(* com.xuzhi.service.ProviderService.add(..)) 切带有任意参数或者不带参数的add（）方法
+                execution(* com.xuzhi.service.ProviderService.add()) 切无参数的方法
+                execution(* com.xuzhi.service.ProviderService.add(String))  切只有一个String类型参数的方法
+                execution(* com.xuzhi.service.ProviderService.add(String,int)) 切同时含有String和int类型的方法
+            -->
+            <aop:after method="methodAfter" pointcut="execution(* com.xuzhi.service.ProviderService.add(String,int))" />
+        </aop:aspect>
+        <aop:aspect id="returningAspect" ref="afterReturningAdvice">
+            <aop:after method="after" pointcut="execution(* com.xuzhi.service.AfterReturnningService.afterReturnService(..))" />
+            <aop:after-returning method="afterReturning" pointcut="execution(* com.xuzhi.service.AfterReturnningService.afterReturnService(..))" returning="returning" />
+        </aop:aspect>
+    </aop:config>
+
+
+
+
+
+
+
+
+
+</beans>

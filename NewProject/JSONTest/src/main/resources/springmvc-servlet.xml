@@ -25,4 +25,27 @@
     <mvc:annotation-driven />
     <!--<mvc:resources mapping="static/css/*" location="static/css/" />-->
 
+    <!--拦截器的配置-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!--
+                /**/*  拦截所有的请求
+                /*    只拦截单层路径的请求
+            -->
+            <mvc:mapping path="/**/*"/>
+            <bean class="com.xuzhi.interceptors.MethodTimerInterceptor" />
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <!--
+                只想拦截/user/**/*
+                还需要开放登录权限
+            -->
+            <mvc:mapping path="/user/**/*"/>
+            <mvc:exclude-mapping path="/user/login" />
+            <bean class="com.xuzhi.interceptors.SessionInterceptor">
+
+            </bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
 </beans>

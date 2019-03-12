@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:lang="http://www.springframework.org/schema/lang"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.3.xsd
+    		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+    		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+    		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+    		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd
+    		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
+    		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.3.xsd
+    		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+    		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    		http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-4.3.xsd
+    		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd ">
+    <!--1、引入properties配置文件-->
+    <!--引入数据库连接基本信息配置文件-->
+    <context:property-placeholder location="classpath:jdbc.properties" />
+    <context:property-placeholder location="classpath:mail.properties" ignore-unresolvable="true" />
+    <!--2、配置dataSource数据源-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="url" value="jdbc:mysql://localhost:3306/drivingdb?useUnicode=true&amp;characterEncoding=UTF-8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="xuzhi7162"/>
+    </bean>
+    <!--3、配置sqlSessionFactory对象-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" >
+        <!--注入dataSource-->
+        <property name="dataSource" ref="dataSource" />
+        <!--配置mybatis的全局配置文件-->
+        <property name="configLocation" value="classpath:mybatis/mybatis-config.xml" />
+        <!--扫描sql需要的配置文件，即mapper需要的配置文件-->
+        <property name="mapperLocations" value="classpath:pro/zyyz/mapper/*.xml" />
+        <!--扫描pojo所在包，使用别名-->
+        <property name="typeAliasesPackage" value="pro.zyyz.pojo" />
+        <!--插件配置-->
+        <property name="plugins" >
+            <array>
+                <!--分页插件的配置，拦截器实现分页功能-->
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <!--这里有几个配置主要演示如何使用，如果不理解，一定要去掉下面的配置-->
+                    <property name="properties">
+                        <value>
+                            helperDialect=mysql
+                            reasonable=true
+                            supportMethodArguments=true
+                            params=count=countSql
+                            autoRuntimeDialect=true
+                        </value>
+                    </property>
+                </bean>
+            </array>
+        </property>
+    </bean>
+    <!-- 4.配置扫描Dao接口包，动态实现Dao接口，注入到spring容器中 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer" >
+        <!--注入sqlSessionFactory-->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+        <!--配置需要扫描的dao包-->
+        <property name="basePackage" value="pro.zyyz.mapper" />
+    </bean>
+
+    <!--事务管理，使用数据源事务管理类进行管理-->
+    <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="transactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    <!--确定事务管理的策略，transaction-manager：指向上面的transactionManage-->
+    <tx:advice transaction-manager="transactionManager" id="transactionAdvice">
+        <!--事务处理的相关知识以及他的传播性-->
+        <tx:attributes>
+            <!--查询相关配置为只读，select，get，query开头-->
+            <tx:method name="select*" read-only="true"/>
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="query*" read-only="true"/>
+            <tx:method name="delete*" propagation="REQUIRED" rollback-for="Exception" />
+            <tx:method name="update*" propagation="REQUIRED" rollback-for="Exception" />
+            <tx:method name="add*" propagation="REQUIRED" rollback-for="Exception" />
+            <tx:method name="insert*" propagation="REQUIRED" rollback-for="Exception" />
+        </tx:attributes>
+    </tx:advice>
+    <!--使用aop对事务管理的范围进行织入，明确几个点
+        1、对那些地方需要进行事务的管理，execution书写，明确边界
+        2、使用什么策略去管理，
+        策略我们使用了tx：advice全部书写于其中，在我们的aop的advisor当中只需要引用这个事务管理者的建议即可
+    -->
+    <aop:config>
+        <aop:pointcut id="txCut" expression="execution(* pro.zyyz.service..*.*(..))" />
+        <aop:advisor advice-ref="transactionAdvice" pointcut-ref="txCut" />
+    </aop:config>
+    <!--采用注解进行事务管理，请在Service的实现类上面加上@Transactional注解-->
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+    <!--配置邮件接口-->
+    <bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="smtp.163.com"/>
+        <property name="username" value="xuzhi7162@163.com"/>
+        <property name="password" value="xuzhi7162"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.timeout">2000</prop>
+            </props>
+        </property>
+    </bean>
+</beans>

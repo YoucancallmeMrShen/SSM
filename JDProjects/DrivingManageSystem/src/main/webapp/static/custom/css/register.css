@@ -1,0 +1,37 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+body{
+   background-color: #393d49;
+}
+#head{
+    height: 60px;
+    background-color: #23262e;
+}
+#headTitle{
+    width: 990px;
+    margin: 0px auto;
+    padding: auto 10px;
+}
+#headTitle span{
+    display: block;
+    padding: 12px;
+    font-size: 27px;
+    color: snow;
+    font-family: 仿宋;
+}
+#content{
+    width: 990px;
+    margin: 0px auto;
+}
+#contentForm{
+    width: 300px;
+    margin: 100px auto;
+}
+form label{
+    color: #FFFFFF;
+}
+form button{
+    float: right;
+}

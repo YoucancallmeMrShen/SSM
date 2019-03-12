@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pro.zyyz.mapper.SignUpMapper">
+    <insert id="insertStudentBase">
+        INSERT INTO studentbase (
+                studentName
+                , studentNameId
+                , studentPhone
+                , studentSignDate
+                , studentReference
+                , studentZip
+                , studentType
+                , studentAddressProvince
+                , studentAddressCity
+                , studentAddressArea
+                , studentAddressSupp )
+        VALUES
+            (
+                  #{studentName}
+                , #{studentNameId}
+                , #{studentPhone}
+                , #{studentSignDate}
+                , #{studentReference}
+                , #{studentZip}
+                , #{studentType}
+                , #{studentAddressProvince}
+                , #{studentAddressCity}
+                , #{studentAddressArea}
+                , #{studentAddressSupp}
+             )
+    </insert>
+
+
+    <select id="queryAllProvince" resultType="pro.zyyz.pojo.ProvincePojo">
+        SELECT
+            id,
+            CODE,
+        NAME
+        FROM
+            province
+    </select>
+    <select id="queryCityByAddressProvinceCode" resultType="pro.zyyz.pojo.CityPojo">
+        SELECT
+            id,
+            CODE,
+            NAME,
+            provinceCode
+        FROM
+            city
+        WHERE
+            provinceCode = #{addressProvinceCode}
+    </select>
+    <select id="queryAreaByAddressCityCode" resultType="pro.zyyz.pojo.AreaPojo">
+        SELECT
+            id,
+            CODE,
+            NAME,
+            cityCode
+        FROM
+            area
+        WHERE
+            cityCode = #{addressCityCode}
+    </select>
+    <resultMap id="studentBase" type="pro.zyyz.pojo.StudentBasePojo">
+        <id property="studentId" column="studentId" />
+        <result property="studentName" column="studentName" />
+        <result property="studentNameId" column="studentNameId" />
+        <result property="studentPhone" column="studentPhone" />
+        <result property="studentSignDate" column="studentSignDate" />
+        <result property="studentReference" column="studentReference" />
+        <result property="studentZip" column="studentZip" />
+        <result property="studentType" column="studentType" />
+        <result property="studentAddressProvince" column="studentAddressProvince" />
+        <result property="studentAddressCity" column="studentAddressCity" />
+        <result property="studentAddressArea" column="studentAddressArea" />
+        <result property="studentAddressSupp" column="studentAddressSupp" />
+        <association property="studentProvince" javaType="pro.zyyz.pojo.ProvincePojo" >
+            <result property="code" column="provinceCode" />
+        </association>
+        <association property="studentCity" javaType="pro.zyyz.pojo.CityPojo" >
+            <result property="code" column="cityCode" />
+        </association>
+        <association property="studentArea" javaType="pro.zyyz.pojo.AreaPojo" >
+            <result property="code" column="areaCode" />
+        </association>
+    </resultMap>
+    <select id="queryStudentBaseByKeywords" resultMap="studentBase">
+        SELECT
+            t1.studentId,
+            t1.studentName,
+            t1.studentNameId,
+            t1.studentPhone,
+            t1.studentSignDate,
+            t1.studentReference,
+            t1.studentZip,
+            t1.studentType,
+            t2.`code` AS provinceCode,
+            t2.`name` AS studentAddressProvince,
+            t3.`code` AS cityCode,
+            t3.`name` AS studentAddressCity,
+            t4.`code` AS areaCode,
+            t4.`name` AS studentAddressArea,
+            t1.studentAddressSupp
+        FROM
+            studentbase t1
+            LEFT JOIN province t2 ON t2.`code` = t1.studentAddressProvince
+            LEFT JOIN city t3 ON t3.`code` = t1.studentAddressCity
+            LEFT JOIN area t4 ON t4.`code` = t1.studentAddressArea
+        <where>
+
+--             查询类型为全部
+            <if test="type == 'all'">
+
+            </if>
+--             查询类型为学员姓名
+            <if test="type == 'name'" >
+                studentName = "%"#{keywords}"%"
+            </if>
+--             查询类型为学员身份证号
+            <if test="type == 'nameId'" >
+                studentNameId = "%"#{keywords}"%"
+            </if>
+--             查询类型为报名类型
+            <if test="type == 'type'" >
+                studentType = "%"#{keywords}"%"
+            </if>
+--             查询类型为报名期号
+            <if test="type == 'signDate'" >
+                studentSignDate = "%"#{keywords}"%"
+            </if>
+        </where>
+    </select>
+</mapper>

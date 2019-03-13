@@ -22,7 +22,7 @@ public interface SignUpService {
      * @param keywords
      * @return
      */
-    String getStudentBaseByKeywords(String type, String keywords);
+    List<StudentBasePojo> getStudentBaseByKeywords(String type, String keywords);
 
     /**
      * 获取数据库中的所有省级地址

@@ -61,9 +61,8 @@ public class SignUpController {
      */
     @RequestMapping("/getStudentBase")
     @ResponseBody
-    public String getStudentBase(@RequestParam("type") String type, @RequestParam("keywords") String keywords){
+    public List<StudentBasePojo> getStudentBase(@RequestParam("type") String type, @RequestParam("keywords") String keywords){
         return signUpService.getStudentBaseByKeywords(type, keywords);
-
     }
 
     /**

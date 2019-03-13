@@ -6,7 +6,7 @@
   Time: 19:16
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <html>
 <head>
     <meta charset="utf-8">
@@ -120,7 +120,28 @@
                     </div>
                 </form>
                 <table class="layui-table"  id="addStudentTable" lay-filter="addStudentTable">
-
+                    <thead>
+                        <tr>
+                            <th rowspan="2">姓名</th>
+                            <th rowspan="2">身份证号</th>
+                            <th rowspan="2">联系电话</th>
+                            <th rowspan="2">推荐人</th>
+                            <th rowspan="2">报名类型</th>
+                            <th rowspan="2">报名期号</th>
+                            <th rowspan="2">邮编</th>
+                            <th colspan="4">地址</th>
+                        </tr>
+                        <tr>
+                            <th>省</th>
+                            <th>市</th>
+                            <th>县</th>
+                            <th>街道</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentBody">
+                        <tr>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
 
@@ -140,6 +161,30 @@
         $(function () {
             $("#l1").addClass("layui-nav-itemed");
             $("#l11").addClass("layui-this");
+            $.ajax({
+                url:'${ctx}/sign/getStudentBase',
+                data:{type:'all',keywords:'123'},
+                success:function (data) {
+                    var length = data.length;
+                    var html= "";
+                    for(var i = 0; i < length; i++){
+                        html += " <tr>\n" +
+                            " <td>"+data[i].studentName+"</td>" +
+                            " <td>"+data[i].studentNameId+"</td>" +
+                            " <td>"+data[i].studentPhone+"</td>" +
+                            " <td>"+data[i].studentReference+"</td>" +
+                            " <td>"+data[i].studentType+"</td>" +
+                            " <td>"+data[i].studentSignDate+"</td>" +
+                            " <td>"+data[i].studentZip+"</td>" +
+                            " <td>"+data[i].studentAddressProvince+"</td>" +
+                            " <td>"+data[i].studentAddressCity+"</td>" +
+                            " <td>"+data[i].studentAddressArea+"</td>" +
+                            " <td>"+data[i].studentAddressSupp+"</td>" +
+                            "</tr>";
+                    }
+                    $("#studentBody").html(html);
+                }
+            })
         })
         form.on("select(AddressProvince)",function () {
             var provinceValue = $('#addressProvince').val();
@@ -193,51 +238,10 @@
 
             }
         })
-        $("#searchBtn").click(function () {
-            var searchType = $("#searchType").val();
-            var searchKeyword = $("#searchKeyword").val();
-            <%--$.ajax({--%>
-                <%--url:"${ctx}/sign/"+searchType+"/"+searchKeyword,--%>
-                <%----%>
-            <%--})--%>
 
-        })
 
-        table.render({
-            elem:'#addStudentTable',
-            url:'${ctx}/sign/getStudentBase',
-            method:'get',
-            where:{type:'all',keywords:''},
-            cols:[[
-                {field:"studentName",title:"姓名", rowspan:2},
-                {field:"studentNameId",title:"身份证号", rowspan:2},
-                {field:"studentPhone",title:"联系电话", rowspan:2},
-                {field:"studentReference",title:"推荐人", rowspan:2},
-                {field:"studentType",title:"报名类型", rowspan:2},
-                {field:"studentSignDate",title:"报名期号", rowspan:2},
-                {field:"studentZip",title:"邮编", rowspan:2},
-                {algin:"center",title:"地址",colspan:4}],
-                [
-                    {field:"studentAddressProvince",title:"省"},
-                    {field:"studentAddressCity",title:"市"},
-                    {field:"studentAddressArea",title:"县(区)"},
-                    {field:"studentAddressSupp",title:"街道(乡镇)"}
-                ]
-            ],
-            page:true,
-            defaultToolbar: ['filter', 'print', 'exports'],
-            response:{
-                statusCode:'200'
-            },
-            parseData:function (res) {
-                return {
-                    "code": res.status,
-                    "msg":res.msg,
-                    "count":res.count,
-                    "data":res.data.item
-                }
-            }
-        })
+
+
 
     });
 </script>

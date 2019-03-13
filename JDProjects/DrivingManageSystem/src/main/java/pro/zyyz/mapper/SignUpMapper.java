@@ -36,5 +36,5 @@ public interface SignUpMapper {
      * @param keywords
      * @return
      */
-    List<StudentBasePojo> queryStudentBaseByKeywords(@Param("type") String type,@Param("keywords") String keywords);
+    List<StudentBasePojo> queryStudentBaseByKeywords(@Param("keywords") String keywords);
 }

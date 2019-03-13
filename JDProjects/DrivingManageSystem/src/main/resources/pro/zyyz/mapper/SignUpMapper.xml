@@ -106,28 +106,7 @@
             LEFT JOIN province t2 ON t2.`code` = t1.studentAddressProvince
             LEFT JOIN city t3 ON t3.`code` = t1.studentAddressCity
             LEFT JOIN area t4 ON t4.`code` = t1.studentAddressArea
-        <where>
-
---             查询类型为全部
-            <if test="type == 'all'">
-
-            </if>
---             查询类型为学员姓名
-            <if test="type == 'name'" >
-                studentName = "%"#{keywords}"%"
-            </if>
---             查询类型为学员身份证号
-            <if test="type == 'nameId'" >
-                studentNameId = "%"#{keywords}"%"
-            </if>
---             查询类型为报名类型
-            <if test="type == 'type'" >
-                studentType = "%"#{keywords}"%"
-            </if>
---             查询类型为报名期号
-            <if test="type == 'signDate'" >
-                studentSignDate = "%"#{keywords}"%"
-            </if>
-        </where>
+       where
+          ${keywords}
     </select>
 </mapper>

@@ -106,7 +106,22 @@
             LEFT JOIN province t2 ON t2.`code` = t1.studentAddressProvince
             LEFT JOIN city t3 ON t3.`code` = t1.studentAddressCity
             LEFT JOIN area t4 ON t4.`code` = t1.studentAddressArea
-       where
-          ${keywords}
+        <where>
+            <if test='type == "all"'>
+                AND studentName like concat("%",#{keywords},"%")
+            </if>
+            <if test='type == "name"'>
+                AND studentName like concat("%",#{keywords},"%")
+            </if>
+            <if test='type == "nameId"'>
+                AND studentNameId like concat("%",#{keywords},"%")
+            </if>
+            <if test='type == "type"'>
+                AND studentType like concat("%",#{keywords},"%")
+            </if>
+            <if test='type == "signDate"'>
+                AND studentSignDate like concat("%",#{keywords},"%")
+            </if>
+        </where>
     </select>
 </mapper>

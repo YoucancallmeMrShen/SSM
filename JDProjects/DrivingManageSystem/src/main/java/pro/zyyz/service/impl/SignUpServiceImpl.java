@@ -1,5 +1,7 @@
 package pro.zyyz.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.zyyz.mapper.SignUpMapper;
@@ -23,20 +25,11 @@ public class SignUpServiceImpl implements SignUpService {
     }
 
     @Override
-    public List<StudentBasePojo> getStudentBaseByKeywords(String type, String keywords) {
-        String sql = "studentName != ''";
-        if(type.equals("all")){
-
-        }else if (type.equals("name")){
-            sql = "studentName like '%"+keywords+"%'";
-        }else if (type.equals("nameId")){
-            sql = "studentNameId like '%"+keywords+"%'";
-        }else if (type.equals("type")){
-            sql = "studentType like '%"+keywords+"%'";
-        }else{
-            sql = "studentSignDate like '%"+keywords+"%'";
-        }
-        return signUpMapper.queryStudentBaseByKeywords( sql );
+    public PageInfo<StudentBasePojo> getStudentBaseByKeywords(String type, String keywords, PageInfo<StudentBasePojo> pageInfo) {
+        PageHelper.startPage(pageInfo.getPageNum(),pageInfo.getPageSize());
+        List<StudentBasePojo> queryStudentBaseList = signUpMapper.queryStudentBaseByKeywords(type, keywords);
+        pageInfo = new PageInfo<>(queryStudentBaseList);
+        return pageInfo;
     }
 
     @Override

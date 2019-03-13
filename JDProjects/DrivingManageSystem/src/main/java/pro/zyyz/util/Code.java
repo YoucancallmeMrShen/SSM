@@ -27,4 +27,10 @@ public class Code {
     public static String MANAGE_Three = "2003";
 
 
+    /**
+     * 页面分页
+     */
+    public static int PAGE_SIZE = 10;
+
+
 }

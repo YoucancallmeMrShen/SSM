@@ -99,13 +99,12 @@
                 </form>
             </div>
             <div style="border: 1px solid #dddddd; padding: 10px;margin-bottom: 5px;">
-                <form class="layui-form" action="" method="post">
+                <form class="layui-form" action="#" onsubmit="javascript:return false;" method="post">
                     <div class="layui-form-item">
                         <label class="layui-form-label"> </label>
                         <div class="layui-input-inline">
                             <select id="searchType" name="searchType" lay-verify="" lay-filter="searchType">
-                                <option value="all">全部</option>
-                                <option value="name" >姓名</option>
+                                <option value="name" selected>姓名</option>
                                 <option value="nameId" >身份证号</option>
                                 <option value="type" >报名类型</option>
                                 <option value="signDate" >报名期号</option>
@@ -119,7 +118,7 @@
                         </div>
                     </div>
                 </form>
-                <table class="layui-table"  id="addStudentTable" lay-filter="addStudentTable">
+                <table class="layui-table" id="addStudentTable" lay-filter="addStudentTable">
                     <thead>
                         <tr>
                             <th rowspan="2">姓名</th>
@@ -143,6 +142,34 @@
                         </tr>
                     </tbody>
                 </table>
+                <div style="float: right">
+                    <div style="float: left;padding: 5px 1px">
+                        <span >共</span>
+                            <span id="pageNums"></span>
+                        <span>页</span>
+                            <span id="rowSizes"></span>
+                        <span>条</span>
+                        <span>当前</span>
+                            <span id="pageCount"></span>
+                        <span>页</span>
+                    </div>
+                    <div style="float: left;margin-left: 7px">
+                        <button class="layui-btn-primary layui-btn-sm" page="first"><li class="layui-icon-prev layui-icon"></li></button>&nbsp;&nbsp;
+                        <button class="layui-btn-primary layui-btn-sm" page="prev"><li class="layui-icon-left layui-icon"></li></button>&nbsp;&nbsp;
+                        <button class="layui-btn-primary layui-btn-sm" page="next"><li class="layui-icon-right layui-icon"></li></button>&nbsp;&nbsp;
+                        <button class="layui-btn-primary layui-btn-sm" page="last"><li class="layui-icon-next layui-icon"></li></button>
+                    </div>
+                    <div style="float: left;margin-left: 7px;" >
+                        <span>到第</span>
+                        <select id="pageSelect" class="layui-select layui-select-group" style="height: 30px;">
+
+                        </select>
+                        <span>页</span>
+                        <button class="layui-btn-primary layui-btn-sm" id="pageSkin" >跳转</button>
+                    </div>
+                </div>
+
+                <div style="clear: both;display: block;"></div>
             </div>
 
         </div>
@@ -153,36 +180,25 @@
 <script src="${ctx}/static/custom/js/main.js"></script>
 <script charset="UTF-8">
     //JavaScript代码区域
-    layui.use(['element','jquery','form','table'], function(){
+    layui.use(['element','jquery','form','table','laypage'], function(){
         var element = layui.element;
         var $ = layui.jquery;
         var form = layui.form;
         var table = layui.table;
+        var laypage = layui.laypage;
         $(function () {
             $("#l1").addClass("layui-nav-itemed");
             $("#l11").addClass("layui-this");
             $.ajax({
                 url:'${ctx}/sign/getStudentBase',
-                data:{type:'all',keywords:'123'},
+                data:{type:'all',keywords:'', pageNum:1 },
                 success:function (data) {
-                    var length = data.length;
-                    var html= "";
-                    for(var i = 0; i < length; i++){
-                        html += " <tr>\n" +
-                            " <td>"+data[i].studentName+"</td>" +
-                            " <td>"+data[i].studentNameId+"</td>" +
-                            " <td>"+data[i].studentPhone+"</td>" +
-                            " <td>"+data[i].studentReference+"</td>" +
-                            " <td>"+data[i].studentType+"</td>" +
-                            " <td>"+data[i].studentSignDate+"</td>" +
-                            " <td>"+data[i].studentZip+"</td>" +
-                            " <td>"+data[i].studentAddressProvince+"</td>" +
-                            " <td>"+data[i].studentAddressCity+"</td>" +
-                            " <td>"+data[i].studentAddressArea+"</td>" +
-                            " <td>"+data[i].studentAddressSupp+"</td>" +
-                            "</tr>";
-                    }
-                    $("#studentBody").html(html);
+                    var dataOne = data.list;
+                    var length = dataOne.length;
+                    $("#pageNums").text(data.pages);
+                    $("#rowSizes").text(data.total);
+                    $("#pageCount").text(1);
+                    loadPage(length,dataOne);
                 }
             })
         })
@@ -235,12 +251,67 @@
                         return;
                     }
                 })
-
             }
         })
-
-
-
+        $("#searchBtn").click(function () {
+            var type = $("#searchType").val();
+            var keyword = $("#searchKeyword").val();
+            $.ajax({
+                url:'${ctx}/sign/getStudentBase',
+                data:{type:type, keywords:keyword, pageNum:1},
+                success:function (data) {
+                    var dataOne = data.list;
+                    var length = dataOne.length;
+                    $("#pageNums").text(data.pages);
+                    $("#rowSizes").text(data.total);
+                    $("#pageCount").text(1);
+                    loadPage(length, dataOne);
+                }
+            })
+        })
+        $('button[page]').click(function () {
+            var pageNum = 1;
+            var v = $(this).attr('page');
+            switch(v){
+                case 'first':
+                    pageNum = 1;
+                    break;
+                case 'prev':
+                    pageNum = currPage-1;
+                    if(pageNum < 1){
+                        pageNum = 1;
+                    }
+                    break;
+                case 'next':
+                    pageNum = currPage + 1;
+                    if(pageNum > total){
+                        pageNum = total;
+                    }
+                    break;
+                case 'last':
+                    pageNum = total;
+                    break;
+            }
+        })
+        function loadPage(length,dataOne) {
+            var html= "";
+            for(var i = 0; i < length; i++){
+                html += " <tr>\n" +
+                    " <td>"+dataOne[i].studentName+"</td>" +
+                    " <td>"+dataOne[i].studentNameId+"</td>" +
+                    " <td>"+dataOne[i].studentPhone+"</td>" +
+                    " <td>"+dataOne[i].studentReference+"</td>" +
+                    " <td>"+dataOne[i].studentType+"</td>" +
+                    " <td>"+dataOne[i].studentSignDate+"</td>" +
+                    " <td>"+dataOne[i].studentZip+"</td>" +
+                    " <td>"+dataOne[i].studentAddressProvince+"</td>" +
+                    " <td>"+dataOne[i].studentAddressCity+"</td>" +
+                    " <td>"+dataOne[i].studentAddressArea+"</td>" +
+                    " <td>"+dataOne[i].studentAddressSupp+"</td>" +
+                    "</tr>";
+            }
+            $("#studentBody").html(html);
+        }
 
 
     });

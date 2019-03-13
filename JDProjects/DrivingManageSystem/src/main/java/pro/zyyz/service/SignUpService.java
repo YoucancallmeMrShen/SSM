@@ -1,5 +1,6 @@
 package pro.zyyz.service;
 
+import com.github.pagehelper.PageInfo;
 import pro.zyyz.pojo.AreaPojo;
 import pro.zyyz.pojo.CityPojo;
 import pro.zyyz.pojo.ProvincePojo;
@@ -22,7 +23,7 @@ public interface SignUpService {
      * @param keywords
      * @return
      */
-    List<StudentBasePojo> getStudentBaseByKeywords(String type, String keywords);
+    PageInfo<StudentBasePojo> getStudentBaseByKeywords(String type, String keywords, PageInfo<StudentBasePojo> pageInfo);
 
     /**
      * 获取数据库中的所有省级地址

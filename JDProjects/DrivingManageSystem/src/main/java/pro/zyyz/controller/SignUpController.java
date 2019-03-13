@@ -1,6 +1,8 @@
 package pro.zyyz.controller;
 
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +14,7 @@ import pro.zyyz.pojo.AreaPojo;
 import pro.zyyz.pojo.CityPojo;
 import pro.zyyz.pojo.StudentBasePojo;
 import pro.zyyz.service.SignUpService;
+import pro.zyyz.util.Code;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -61,8 +64,12 @@ public class SignUpController {
      */
     @RequestMapping("/getStudentBase")
     @ResponseBody
-    public List<StudentBasePojo> getStudentBase(@RequestParam("type") String type, @RequestParam("keywords") String keywords){
-        return signUpService.getStudentBaseByKeywords(type, keywords);
+    public PageInfo<StudentBasePojo> getStudentBase(@RequestParam("type") String type, @RequestParam("keywords") String keywords, @RequestParam("pageNum") int pageNum){
+        System.out.println(type+keywords+pageNum);
+        PageInfo<StudentBasePojo> queryStudentBase = new PageInfo<>();
+        queryStudentBase.setPageNum(pageNum);
+        queryStudentBase.setPageSize(Code.PAGE_SIZE);
+        return signUpService.getStudentBaseByKeywords(type, keywords, queryStudentBase);
     }
 
     /**
